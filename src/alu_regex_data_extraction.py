@@ -26,11 +26,22 @@ def extract_emails(text):
 
 
 # ------------------------------
-# URL EXTRACTION
+# URL EXTRACTION (improved)
 # ------------------------------
 def extract_urls(text):
-    url_pattern = r'https?://[^\s]+'
-    return re.findall(url_pattern, text)
+    """
+    Extract URLs but avoid capturing common trailing punctuation like commas,
+    periods, closing parentheses, quotes, etc. Also normalize by stripping
+    any leftover trailing punctuation from matches.
+    """
+    # don't include spaces or common trailing punctuation in the match
+    url_pattern = r'https?://[^\s\)\]\}\>,"]+'
+    matches = re.findall(url_pattern, text)
+
+    # Defensive cleanup: remove trailing punctuation that might still remain
+    cleaned = [m.rstrip('.,;:)]}>\'"') for m in matches]
+    return cleaned
+
 
 
 # ------------------------------
